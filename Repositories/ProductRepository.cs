@@ -2,7 +2,7 @@ using System.Data;
 using SimpleDownloaderApp.Models;
 using Microsoft.Data.SqlClient;
 
-namespace SimpleDownloaderApp.Repository;
+namespace SimpleDownloaderApp.Repositories;
 
 public class ProductRepository : IProductRepository
 {

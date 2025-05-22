@@ -1,6 +1,6 @@
 using SimpleDownloaderApp.Models;
 
-namespace SimpleDownloaderApp.Repository;
+namespace SimpleDownloaderApp.Repositories;
 
 public interface IProductRepository
 {

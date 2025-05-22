@@ -5,7 +5,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SimpleDownloaderApp.Models;
-using SimpleDownloaderApp.Repository;
+using SimpleDownloaderApp.Repositories;
 
 namespace SimpleDownloaderApp.Controllers;
 

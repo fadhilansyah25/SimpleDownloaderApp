@@ -1,6 +1,6 @@
 using QuestPDF.Infrastructure;
 using SimpleDownloaderApp.Models;
-using SimpleDownloaderApp.Repository;
+using SimpleDownloaderApp.Repositories;
 
 // Configure QuestPDF community license
 QuestPDF.Settings.License = LicenseType.Community;

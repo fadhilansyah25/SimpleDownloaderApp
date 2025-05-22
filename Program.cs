@@ -1,5 +1,6 @@
 using QuestPDF.Infrastructure;
 using SimpleDownloaderApp.Models;
+using SimpleDownloaderApp.Repository;
 
 // Configure QuestPDF community license
 QuestPDF.Settings.License = LicenseType.Community;
@@ -17,6 +18,9 @@ builder.Services.AddScoped<AdoDbContext>(options =>
               ?? throw new InvalidOperationException("Missing connection string");
     return new AdoDbContext(connStr);
 });
+
+// Add repository dependency injection 
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

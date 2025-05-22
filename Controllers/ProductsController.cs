@@ -41,6 +41,9 @@ public class ProductsController : ControllerBase
         };
     }
 
+    /// <summary>
+    /// Get all products from database
+    /// </summary>
     [HttpGet("/database/products")]
     public List<Product> GetAllProductsFromDatabase()
     {
@@ -48,29 +51,41 @@ public class ProductsController : ControllerBase
     }
 
     /// <summary>
-    /// Download all products data excel format
+    /// Download finished goods products data in Excel format.
     /// </summary>
+    /// <remarks>
+    /// Generates an Excel file containing all finished goods product data.
+    /// </remarks>
+    /// <returns>
+    /// Returns an Excel (.xlsx) file with the list of finished goods products.
+    /// </returns>
+    /// <response code="200">Returns the Excel file containing product data.</response>
+    /// <response code="500">If an error occurs while generating the Excel file.</response>
     [HttpGet("/download/excel")]
-    public IActionResult DownloadExcelSederhana()
+    public IActionResult GetFinishedGoodsExcelFile()
     {
-        var products = GetAllProducts();
+        var products = _productRepo.GetFinishedGoodsProducts();
 
         using (var workbook = new XLWorkbook())
         {
-            var worksheet = workbook.Worksheets.Add("Product Data Record");
+            var worksheet = workbook.Worksheets.Add("Finished Goods Products");
 
             worksheet.Cell(1, 1).SetValue("ID").Style.Font.SetBold();
             worksheet.Cell(1, 2).SetValue("Name").Style.Font.SetBold();
-            worksheet.Cell(1, 3).SetValue("Sub Category").Style.Font.SetBold();
-            worksheet.Cell(1, 4).SetValue("List Price").Style.Font.SetBold();
+            worksheet.Cell(1, 3).SetValue("Product Number").Style.Font.SetBold();
+            worksheet.Cell(1, 4).SetValue("SubCategoryID").Style.Font.SetBold();
+            worksheet.Cell(1, 5).SetValue("Sub Category").Style.Font.SetBold();
+            worksheet.Cell(1, 6).SetValue("List Price").Style.Font.SetBold();
 
             int row = 2;
             foreach (var product in products)
             {
                 worksheet.Cell(row, 1).SetValue(product.ProductID);
                 worksheet.Cell(row, 2).SetValue(product.Name);
-                worksheet.Cell(row, 3).SetValue(product.SubCategory);
-                worksheet.Cell(row, 4).SetValue(product.ListPrice).Style.NumberFormat.SetFormat("$0.00");
+                worksheet.Cell(row, 3).SetValue(product.ProductNumber);
+                worksheet.Cell(row, 4).SetValue(product.ProductSubCategoryID);
+                worksheet.Cell(row, 5).SetValue(product.SubCategory);
+                worksheet.Cell(row, 6).SetValue(product.ListPrice).Style.NumberFormat.SetFormat("$0.00");
                 row++;
             }
 
@@ -86,12 +101,20 @@ public class ProductsController : ControllerBase
     }
 
     /// <summary>
-    /// Download all products data pdf format
+    /// Download finished goods products data in PDF format.
     /// </summary>
+    /// <remarks>
+    /// Generates a PDF file containing all finished goods product data.
+    /// </remarks>
+    /// <returns>
+    /// Returns a PDF file with the list of finished goods products.
+    /// </returns>
+    /// <response code="200">Returns the PDF file containing product data.</response>
+    /// <response code="500">If an error occurs while generating the PDF file.</response>
     [HttpGet("/download/pdf")]
-    public IActionResult DownloadPdfSederhana()
+    public IActionResult GetFinishedGoodsPdfFile()
     {
-        var products = GetAllProducts();
+        var products = _productRepo.GetFinishedGoodsProducts(); ;
 
         var document = Document.Create(container =>
             {
@@ -113,6 +136,8 @@ public class ProductsController : ControllerBase
                             columns.ConstantColumn(40);
                             columns.RelativeColumn(2);
                             columns.RelativeColumn();
+                            columns.ConstantColumn(60);
+                            columns.RelativeColumn(1.5f);
                             columns.RelativeColumn();
                         });
 
@@ -121,6 +146,8 @@ public class ProductsController : ControllerBase
                         {
                             header.Cell().Element(CellStyle).Text("ID").Bold();
                             header.Cell().Element(CellStyle).Text("Name").Bold();
+                            header.Cell().Element(CellStyle).Text("Product Number").Bold();
+                            header.Cell().Element(CellStyle).Text("SubCat ID").Bold();
                             header.Cell().Element(CellStyle).Text("Sub Category").Bold();
                             header.Cell().Element(CellStyle).Text("List Price").Bold();
 
@@ -137,8 +164,10 @@ public class ProductsController : ControllerBase
                         {
                             table.Cell().Element(CellStyle).Text(products[i].ProductID.ToString());
                             table.Cell().Element(CellStyle).Text(products[i].Name);
+                            table.Cell().Element(CellStyle).Text(products[i].ProductNumber);
+                            table.Cell().Element(CellStyle).Text(products[i].ProductSubCategoryID.ToString());
                             table.Cell().Element(CellStyle).Text(products[i].SubCategory);
-                            table.Cell().Element(CellStyle).Text($"{products[i].ListPrice:C}"); // Format currency
+                            table.Cell().Element(CellStyle).Text($"{products[i].ListPrice:C}");
 
                             IContainer CellStyle(IContainer container)
                             {

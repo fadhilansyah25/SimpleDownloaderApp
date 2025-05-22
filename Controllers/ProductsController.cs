@@ -5,6 +5,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SimpleDownloaderApp.Models;
+using SimpleDownloaderApp.Repository;
 
 namespace SimpleDownloaderApp.Controllers;
 
@@ -12,6 +13,13 @@ namespace SimpleDownloaderApp.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
+    private readonly IProductRepository _productRepo;
+
+    public ProductsController(IProductRepository productRepo)
+    {
+        _productRepo = productRepo;
+    }
+
     /// <summary>
     /// Get all products
     /// </summary>
@@ -31,6 +39,12 @@ public class ProductsController : ControllerBase
             new Product { ProductID = 9, Name = "Bike Pump", SubCategory = "Tools", ListPrice = 25.00m },
             new Product { ProductID = 10, Name = "Cycling Shorts", SubCategory = "Apparel", ListPrice = 55.00m }
         };
+    }
+
+    [HttpGet("/database/products")]
+    public List<Product> GetAllProductsFromDatabase()
+    {
+        return _productRepo.GetAllProducts();
     }
 
     /// <summary>

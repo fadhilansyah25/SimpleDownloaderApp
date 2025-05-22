@@ -15,7 +15,7 @@ builder.Services.AddScoped<AdoDbContext>(options =>
 {
     var config = options.GetRequiredService<IConfiguration>();
     var connStr = config.GetConnectionString("DefaultConnection")
-              ?? throw new InvalidOperationException("Missing connection string");
+                  ?? throw new InvalidOperationException("Missing connection string.");
     return new AdoDbContext(connStr);
 });
 

@@ -8,9 +8,9 @@ public class ProductRepository : IProductRepository
 {
     private SqlConnection _connection;
 
-    public ProductRepository(SqlConnection connection)
+    public ProductRepository(AdoDbContext db)
     {
-        _connection = connection;
+        _connection = db.Connection;
     }
 
     public List<Product> GetAllProducts()
@@ -32,8 +32,6 @@ public class ProductRepository : IProductRepository
         ";
 
         using var command = new SqlCommand(query, _connection);
-
-        _connection.Open();
 
         using var reader = command.ExecuteReader();
 
@@ -64,8 +62,6 @@ public class ProductRepository : IProductRepository
             CommandType = CommandType.StoredProcedure
         };
 
-        _connection.Open();
-
         using var reader = command.ExecuteReader();
 
         while (reader.Read())
@@ -82,6 +78,7 @@ public class ProductRepository : IProductRepository
 
             products.Add(product);
         }
+
 
         return products;
     }
